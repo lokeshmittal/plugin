@@ -1,160 +1,116 @@
 <?php if (!defined('ABSPATH')) die('No direct access allowed'); ?>
 <div class="divi-admin-preloader"></div>
 <div class="subsubsub_section">
-
-    <?php if (isset($_GET['settings_saved'])): ?>
-        <div id="message" class="updated"><p><strong><?php _e("Your settings have been saved.", 'products-filter-custom') ?></strong></p></div>
-    <?php endif; ?>
-
-    <?php
-    if (!empty(DIVI_HELPER::$notices)) {
-	foreach (DIVI_HELPER::$notices as $key) {
-	    DIVI_HELPER::show_admin_notice($key);
-	}
-    }
-    ?>
-
-
-    <?php if (isset($_GET['divi_hide_notice'])): ?>
-        <script type="text/javascript">
-    	window.location = "<?php echo admin_url('admin.php?page=wc-settings&tab=divi'); ?>";
-        </script>
-    <?php endif; ?>
-
+<style>
+.section_right{
+	width: <?php echo $divi_settings['divi_box_maxwidth']; ?>% !important;
+	background: <?php echo $color1; ?>;   
+    border: <?php echo $divi_settings['divi_box_border_size']; ?>px solid <?php echo $color2; ?>;
+    border-radius: <?php echo $divi_settings['divi_box_radius']; ?>px;
+    opacity: <?php echo $divi_settings['divi_box_opacity']; ?>;
+}
+.section_right h3 {
+    color: <?php echo $divi_settings['divi_filter_title_color']; ?> !important;
+	border-bottom: 1px solid #ddd;
+    font-size: <?php echo $divi_settings['divi_filter_title_size']; ?>px;
+    font-weight: <?php echo $divi_settings['divi_filter_title_weight']; ?>;
+    padding: <?php echo $divi_settings['divi_filter_title_top'].'px '.$divi_settings['divi_filter_title_right'].'px '.$divi_settings['divi_filter_title_buttom'].'px '.$divi_settings['divi_filter_title_left']; ?>px;
+	font-family:<?php echo $divi_settings['divi_filter_title_fontfamily']; ?>;
+	margin: 0 0 0.75em;
+}
+.reset_text{
+ color: <?php echo $color11; ?> !important;
+ background: <?php echo $color12; ?>; 
+ font-size:<?php echo $divi_settings['divi_reset_size']; ?>px;
+ font-weight:<?php echo $divi_settings['divi_reset_weight']; ?>;
+ border: <?php echo $divi_settings['divi_reset_bsize']; ?>px solid <?php echo $color13; ?>;  
+ font-family:<?php echo $divi_settings['divi_reset_fontfamily']; ?>; 
+ box-shadow: <?php echo $divi_settings['divi_box_show1'].'px '.$divi_settings['divi_box_show2'].'px '.$divi_settings['divi_box_show3'].'px '.$divi_settings['divi_box_show4'].'px '.$color15; ?>;
+ padding: 1em 2em;
+}
+.apply_text{
+ color: <?php echo $color8; ?>;
+ background: <?php echo $color9; ?>; 
+ font-size:<?php echo $divi_settings['divi_apply_size']; ?>px;
+ font-weight:<?php echo $divi_settings['divi_apply_weight']; ?>;
+ border: <?php echo $divi_settings['divi_apply_bsize']; ?>px solid <?php echo $color10; ?>;
+ font-family:<?php echo $divi_settings['divi_apply_fontfamily']; ?>;
+ box-shadow: <?php echo $divi_settings['divi_box_show1'].'px '.$divi_settings['divi_box_show2'].'px '.$divi_settings['divi_box_show3'].'px '.$divi_settings['divi_box_show4'].'px '.$color15; ?>;
+ padding: 1em 2em;
+}
+button.preview_apply_reset_right {
+    color: <?php echo $color5; ?>;
+    background: <?php echo $color6; ?>;
+    border: <?php echo $divi_settings['divi_mainbutton_bsize']; ?>px solid <?php echo $color7; ?>;
+    font-size: <?php echo $divi_settings['divi_mainbutton_size']; ?>px;
+    padding: <?php echo $divi_settings['divi_mainbutton_top']; ?>px <?php echo $divi_settings['divi_mainbutton_right']; ?>px <?php echo $divi_settings['divi_mainbutton_buttom']; ?>px <?php echo $divi_settings['divi_mainbutton_left']; ?>px;
+	border-radius: <?php echo $divi_settings['divi_mainbutton_radius']; ?>px;
+	line-height: 0;
+	margin-top: -3px;
+    margin-right: -1px;
+}
+.preview_cat{
+    max-height: <?php echo $divi_settings['divi_box_maxheight']; ?>px;
+	overflow-y: auto;	
+}
+.filter_back_end_h4{
+    color: <?php echo $color3; ?> !important;
+    line-height: <?php echo $divi_settings['divi_filter_name_lineheight']; ?>px;
+    font-size: <?php echo $divi_settings['divi_filter_name_size']; ?>px;
+    font-weight: <?php echo $divi_settings['divi_filter_name_weight']; ?>;
+    padding: <?php echo $divi_settings['divi_filter_name_top'].'px '.$divi_settings['divi_filter_name_right'].'px '.$divi_settings['divi_filter_name_buttom'].'px '.$divi_settings['divi_filter_name_left']; ?>px;
+	font-family:<?php echo $divi_settings['divi_filter_name_fontfamily']; ?>;
+}
+span.label_mname{
+    color: <?php echo $color4; ?> !important;
+    line-height: <?php echo $divi_settings['divi_filter_content_lineheight']; ?>px;
+    font-size: <?php echo $divi_settings['divi_filter_content_size']; ?>px;
+    font-weight: <?php echo $divi_settings['divi_filter_content_weight']; ?>;
+    padding: <?php echo $divi_settings['divi_filter_content_top'].'px '.$divi_settings['divi_filter_content_right'].'px '.$divi_settings['divi_filter_content_buttom'].'px '.$divi_settings['divi_filter_content_left']; ?>px;
+	font-family:<?php echo $divi_settings['divi_filter_content_fontfamily']; ?>;
+}
+.product_visibility {
+    display: none;
+}
+</style>
     <section class="divi-section">
         <h3><span class="by_icon"><i class="fa fa-circle" aria-hidden="true"></i></span> <?php printf(__('Woocommerce Products Filter', 'products-filter-custom'), DIVI_VERSION) ?> <span class="by_divi">by diviunlimited</span><span class="info_circle"><i class="fa fa-info-circle" aria-hidden="true"></i></span></h3>
         <input type="hidden" name="divi_settings" value="" />
         <input type="hidden" name="divi_settings[items_order]" value="<?php echo(isset($divi_settings['items_order']) ? $divi_settings['items_order'] : '') ?>" />
 
-	<?php if (version_compare(WOOCOMMERCE_VERSION, DIVI_MIN_WOOCOMMERCE_VERSION, '<')): ?>
+	<?php if (version_compare(WOOCOMMERCE_VERSION, DIVI_MIN_WOOCOMMERCE_VERSION, '<=')): ?>
 
     	<div id="message" class="error fade"><p><strong><?php _e("ATTENTION! Your version of the woocommerce plugin is too obsolete. There is no warranty for working with DIVI!!", 'products-filter-custom') ?></strong></p></div>
 
 	<?php endif; ?>
-
-        <svg class="hidden">
-        <defs>
-        <path id="tabshape" d="M80,60C34,53.5,64.417,0,0,0v60H80z"/>
-        </defs>
-        </svg>
-
         <div id="tabs" class="divi-tabs divi-tabs-style-shape">
 
             <nav>
                 <ul>
                     <li class="tab-current">
                         <a href="#tabs-1">
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
                             <span><?php _e("Filters", 'products-filter-custom') ?></span>
                         </a>
                     </li>
 					<li>
                         <a href="#tabs-5">
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
                             <span><?php _e("Appearance", 'products-filter-custom') ?></span>
                         </a>
                     </li>
 					<li>
                         <a href="#tabs-2">
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
                             <span><?php _e("Basic Setting", 'products-filter-custom') ?></span>
                         </a>
                     </li>
 					<li>
                         <a href="#tabs-4">
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
                             <span><?php _e("Advanced Setting", 'products-filter-custom') ?></span>
                         </a>
-                    </li>
-					<!--------------------------------MOSTTTTTTTTTTTTTTTTTTTTTTT-------------------------------------------------------------
-                    <li>
-                        <a href="#tabs-3">
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
-                            <span><?php //_e("Design", 'products-filter-custom') ?></span>
-                        </a>
-                    </li>
-					--------------------------------MOSTTTTTTTTTTTTTTTTTTTTTTT------------------------------------------------------------->
-
-		    <?php
-		    if (!empty(DIVI_EXT::$includes['applications'])) {
-			foreach (DIVI_EXT::$includes['applications'] as $obj) {
-			    $dir1 = $this->get_custom_ext_path() . $obj->folder_name;
-			    $dir2 = DIVI_EXT_PATH . $obj->folder_name;
-			    $checked1 = DIVI_EXT::is_ext_activated($dir1);
-			    $checked2 = DIVI_EXT::is_ext_activated($dir2);
-			    if ($checked1 OR $checked2) {
-				do_action('divi_print_applications_tabs_' . $obj->folder_name);
-			    }
-			}
-		    }
-		    ?>
-                    <!--   
-                    <li>
-                        <a href="#tabs-6">
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
-                            <span><?php /* _e("Extensions", 'products-filter-custom') */ ?></span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#tabs-7">
-                            <svg viewBox="0 0 80 60" preserveAspectRatio="none"><use xlink:href="#tabshape"></use></svg>
-                            <span><?php /* _e("Info", 'products-filter-custom') */ ?></span>
-                        </a>
-                    </li>
-					-->
+           
                 </ul>
             </nav>
 
             <div class="content-wrap">
-
-                <section id="tabs-1" class="content-current">
-                  <div class="section_left"> 
-                    <?php //include('filter_form.php'); ?>				  
-                    <ul id="divi_options" style="display:block;">
-
-							<?php
-							$items_order = array();
-							$taxonomies = $this->get_taxonomies();
-							$taxonomies_keys = array_keys($taxonomies);
-							if (isset($divi_settings['items_order']) AND ! empty($divi_settings['items_order'])) {
-								$items_order = explode(',', $divi_settings['items_order']);
-							} else {
-								$items_order = array_merge($this->items_keys, $taxonomies_keys);
-							}
-
-				//*** lets check if we have new taxonomies added in woocommerce or new item
-							foreach (array_merge($this->items_keys, $taxonomies_keys) as $key) {
-								if (!in_array($key, $items_order)) {
-								$items_order[] = $key;
-								}
-							}
-
-				//lets print our items and taxonomies
-							foreach ($items_order as $key) {
-								if (in_array($key, $this->items_keys)) {
-								divi_print_item_by_key($key, $divi_settings);
-								} else {
-								if (isset($taxonomies[$key])) {
-									divi_print_tax($key, $taxonomies[$key], $divi_settings);
-								}
-								}
-							}
-							?>
-                    </ul>
-				   </div>
-					<?php include('preview_form.php'); ?>
-					<div class="preview_reset">
-						<input type="button" class="divi_reset_order" style="float: right;" value="<?php _e('Reset', 'products-filter-custom') ?>" />
-						<input type="button" class="divi_reset_order11" style="float: right;" value="<?php _e('Hide preview', 'products-filter-custom') ?>" />
-                    </div>     
-                    <div class="clear"></div>
-
-                </section>
                 <section id="tabs-2">
                   <div class="content_left">    
 				   <!---############################################################=My Code= ######################################################################---->
@@ -533,213 +489,7 @@
 			
 			
 		    ?>
-                   <!--    
-                    <div class="divi-control-section">
-
-                        <h4><?php //_e('Auto filter close/open image', 'products-filter-custom') ?></h4>
-
-                        <div class="divi-control-container">
-                            <div class="divi-control divi-upload-style-wrap">
-                                <input type="text" name="divi_settings[divi_auto_hide_button_img]" value="<?php //echo $divi_settings['divi_auto_hide_button_img'] ?>" />
-                                <a href="#" class="divi-button divi_select_image"><?php //_e('Select Image', 'products-filter-custom') ?></a>
-                            </div>
-                            <div class="divi-description">
-                                <p class="description"><?php //_e('Image which displayed instead filter while it is closed if selected. Write "none" here if you want to use text only!', 'products-filter-custom') ?></p>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="divi-control-section">
-
-                        <h4><?php _e('Auto filter close/open text', 'products-filter-custom') ?></h4>
-
-                        <div class="divi-control-container">
-                            <div class="divi-control">
-                                <input type="text" name="divi_settings[divi_auto_hide_button_txt]" value="<?php //echo $divi_settings['divi_auto_hide_button_txt'] ?>" />
-                            </div>
-                            <div class="divi-description">
-                                <p class="description"><?php //_e('Text which displayed instead filter while it is closed if selected.', 'products-filter-custom') ?></p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="divi-control-section">
-
-                        <h4><?php //_e('Image for subcategories [<i>open</i>]', 'products-filter-custom') ?></h4>
-
-                        <div class="divi-control-container">
-                            <div class="divi-control divi-upload-style-wrap">
-                                <input type="text" name="divi_settings[divi_auto_subcats_plus_img]" value="<?php //echo(isset($divi_settings['divi_auto_subcats_plus_img']) ? $divi_settings['divi_auto_subcats_plus_img'] : '') ?>" />
-                                <a href="#" class="divi-button divi_select_image"><?php //_e('Select Image', 'products-filter-custom') ?></a>
-                            </div>
-                            <div class="divi-description">
-                                <p class="description"><?php //_e('Image when you select in tab Options "Hide childs in checkboxes and radio". By default it is green cross.', 'products-filter-custom') ?></p>
-                            </div>
-                        </div>
-
-                        <h4><?php //_e('Image for subcategories [<i>close</i>]', 'products-filter-custom') ?></h4>
-
-                        <div class="divi-control-container">
-                            <div class="divi-control divi-upload-style-wrap">
-                                <input type="text" name="divi_settings[divi_auto_subcats_minus_img]" value="<?php //echo(isset($divi_settings['divi_auto_subcats_minus_img']) ? $divi_settings['divi_auto_subcats_minus_img'] : '') ?>" />
-                                <a href="#" class="divi-button divi_select_image"><?php //_e('Select Image', 'products-filter-custom') ?></a>
-                            </div>
-                            <div class="divi-description">
-                                <p class="description"><?php //_e('Image when you select in tab Options "Hide childs in checkboxes and radio". By default it is green minus.', 'products-filter-custom') ?></p>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="divi-control-section">
-
-                        <h4><?php //_e('Toggle block type', 'products-filter-custom') ?></h4>
-
-                        <div class="divi-control-container">
-
-                            <div class="divi-control divi-upload-style-wrap">
-
-				<?php /*
-				$toggle_types = array(
-				    'text' => __('Text', 'products-filter-custom'),
-				    'image' => __('Images', 'products-filter-custom')
-				);
-
-				if (!isset($divi_settings['toggle_type'])) {
-				    $divi_settings['toggle_type'] = 'text';
-				}
-				$toggle_type = $divi_settings['toggle_type'];
-				*/
-				?>
-
-                                <div class="select-wrap">
-                                    <select name="divi_settings[toggle_type]" class="chosen_select" id="toggle_type">
-					<?php //foreach ($toggle_types as $key => $value) : ?>
-    					<option value="<?php //echo $key; ?>" <?php //if ($toggle_type == $key): ?>selected="selected"<?php //endif; ?>><?php //echo $value; ?></option>
-					<?php //endforeach; ?>
-                                    </select>
-                                </div>
-
-
-                            </div>
-                            <div class="divi-description">
-                                <p class="description">
-				    <?php //_e('Type of the toogle on the front for block of html-items as: radio, checkbox .... Works only if the block title is not hidden!', 'products-filter-custom') ?>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="toggle_type_text" <?php //if ($toggle_type == 'image'): ?>style="display: none;"<?php //endif; ?>>
-
-                            <h4><?php //_e('Text for block toggle [<i>opened</i>]', 'products-filter-custom') ?></h4>
-
-                            <div class="divi-control-container">
-                                <div class="divi-control divi-upload-style-wrap">
-				    <?php
-					/*
-				    if (!isset($divi_settings['toggle_opened_text'])) {
-					$divi_settings['toggle_opened_text'] = '';
-				    }
-					*/
-				    ?>
-                                    <input type="text" name="divi_settings[toggle_opened_text]" value="<?php //echo $divi_settings['toggle_opened_text'] ?>" />
-                                </div>
-                                <div class="divi-description">
-                                    <p class="description"><?php //_e('Toggle text for opened html-items block. Example: close. By default applied sign minus "-"', 'products-filter-custom') ?></p>
-                                </div>
-                            </div>
-
-                            <h4><?php //_e('Text for block toggle [<i>closed</i>]', 'products-filter-custom') ?></h4>
-
-                            <div class="divi-control-container">
-                                <div class="divi-control divi-upload-style-wrap">
-				    <?php /*
-				    if (!isset($divi_settings['toggle_closed_text'])) {
-					$divi_settings['toggle_closed_text'] = '';
-				    }
-					*/
-				    ?>
-                                    <input type="text" name="divi_settings[toggle_closed_text]" value="<?php //echo $divi_settings['toggle_closed_text'] ?>" />
-                                </div>
-                                <div class="divi-description">
-                                    <p class="description"><?php //_e('Toggle text for closed html-items block. Example: open. By default applied sign plus "+"', 'products-filter-custom') ?></p>
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                        <div class="toggle_type_image" <?php //if ($toggle_type == 'text'): ?>style="display: none;"<?php //endif; ?>>
-                            <h4><?php //_e('Image for block toggle [<i>opened</i>]', 'products-filter-custom') ?></h4>
-
-                            <div class="divi-control-container">
-                                <div class="divi-control divi-upload-style-wrap">
-				    <?php
-					/*
-				    if (!isset($divi_settings['toggle_opened_image'])) {
-					$divi_settings['toggle_opened_image'] = '';
-				    }
-					*/
-				    ?>
-                                    <input type="text" name="divi_settings[toggle_opened_image]" value="<?php //echo(isset($divi_settings['toggle_opened_image']) ? $divi_settings['toggle_opened_image'] : '') ?>" />
-                                    <a href="#" class="divi-button divi_select_image"><?php //_e('Select Image', 'products-filter-custom') ?></a>
-                                </div>
-                                <div class="divi-description">
-                                    <p class="description"><?php //_e('Any image for opened html-items block 20x20', 'products-filter-custom') ?></p>
-                                </div>
-                            </div>
-
-
-                            <h4><?php //_e('Image for block toggle [<i>closed</i>]', 'products-filter-custom') ?></h4>
-
-                            <div class="divi-control-container">
-                                <div class="divi-control divi-upload-style-wrap">
-				    <?php
-					/*
-				    if (!isset($divi_settings['toggle_closed_image'])) {
-					$divi_settings['toggle_closed_image'] = '';
-				    }
-					*/
-				    ?>
-                                    <input type="text" name="divi_settings[toggle_closed_image]" value="<?php //echo(isset($divi_settings['toggle_closed_image']) ? $divi_settings['toggle_closed_image'] : '') ?>" />
-                                    <a href="#" class="divi-button divi_select_image"><?php //_e('Select Image', 'products-filter-custom') ?></a>
-                                </div>
-                                <div class="divi-description">
-                                    <p class="description"><?php //_e('Any image for closed html-items block 20x20', 'products-filter-custom') ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-		    <?php
-			/*
-		    if (!isset($divi_settings['custom_front_css'])) {
-			$divi_settings['custom_front_css'] = '';
-		    }
-			*/
-		    ?>
-
-                    <div class="divi-control-section">
-
-                        <h4><?php //_e('Custom front css styles file link', 'products-filter-custom') ?></h4>
-
-                        <div class="divi-control-container">
-                            <div class="divi-control">
-                                <input type="text" name="divi_settings[custom_front_css]" value="<?php //echo $divi_settings['custom_front_css'] ?>" />
-                            </div>
-                            <div class="divi-description">
-                                <p class="description"><?php //_e('For developers who want to rewrite front css of the plugin front side. You are need to know CSS for this!', 'products-filter-custom') ?></p>
-                            </div>
-                        </div>
-
-                    </div>
-            -->  
+      
 		    <?php do_action('divi_print_design_additional_options'); ?>
                
 			   </div>
@@ -3162,22 +2912,6 @@ if($divi_settings['divi_mainbutton_bgcolor'] != '') { $color6 = $divi_settings['
 else{ $color6 = '#607D8B'; }
 if($divi_settings['divi_mainbutton_bcolor'] != '') { $color7 = $divi_settings['divi_mainbutton_bcolor']; }
 else{ $color7 = '#a5a5a5'; }
-if($divi_settings['divi_apply_color'] != '') { $color8 = $divi_settings['divi_apply_color']; }
-else{ $color8 = '#ffffff'; }
-if($divi_settings['divi_apply_bgcolor'] != '') { $color9 = $divi_settings['divi_apply_bgcolor']; }
-else{ $color9 = '#9e9e9e'; }
-if($divi_settings['divi_apply_bcolor'] != '') { $color10 = $divi_settings['divi_apply_bcolor']; }
-else{ $color10 = '#ffc000'; }
-if($divi_settings['divi_reset_color'] != '') { $color11 = $divi_settings['divi_reset_color']; }
-else{ $color11 = '#ffffff'; }
-if($divi_settings['divi_reset_bgcolor'] != '') { $color12 = $divi_settings['divi_reset_bgcolor']; }
-else{ $color12 = '#9e9e9e'; }
-if($divi_settings['divi_reset_bcolor'] != '') { $color13 = $divi_settings['divi_reset_bcolor']; }
-else{ $color13 = '#b2a2c7'; }
-if($divi_settings['divi_filter_title_color'] != '') { $color14 = $divi_settings['divi_filter_title_color']; }
-else{ $color14 = '#000000'; }
-if($divi_settings['divi_box_show5'] != '') { $color15 = $divi_settings['divi_box_show5']; }
-else{ $color15 = '#000000'; }
 ?>
 
 <script>
@@ -3256,100 +2990,8 @@ jQuery(document).ready(function(){
 		color:'<?php echo $color12; ?>',
 		initialHistory: ['#ff0000','#000000','red', 'purple']
 	})
-	jQuery('.color13').colorpicker({
-		color:'<?php echo $color13; ?>',
-		initialHistory: ['#ff0000','#000000','red', 'purple']
-	})
-	jQuery('.color14').colorpicker({
-		color:'<?php echo $color14; ?>',
-		initialHistory: ['#ff0000','#000000','red', 'purple']
-	})
-	jQuery('.color15').colorpicker({
-		color:'<?php echo $color15; ?>',
-		initialHistory: ['#ff0000','#000000','red', 'purple']
-	})
-
-	jQuery('.more_info_color').on('click', function(){
-		jQuery(".more_info_color_div").toggle('slow');
-	});
-	jQuery('.more_info_brand').on('click', function(){
-		jQuery(".more_info_brand_div").toggle('slow');
-	});
-
 });
 
 </script>
 
 
-<style>
-.section_right{
-	width: <?php echo $divi_settings['divi_box_maxwidth']; ?>% !important;
-	background: <?php echo $color1; ?>;   
-    border: <?php echo $divi_settings['divi_box_border_size']; ?>px solid <?php echo $color2; ?>;
-    border-radius: <?php echo $divi_settings['divi_box_radius']; ?>px;
-    opacity: <?php echo $divi_settings['divi_box_opacity']; ?>;
-}
-.section_right h3 {
-    color: <?php echo $divi_settings['divi_filter_title_color']; ?> !important;
-	border-bottom: 1px solid #ddd;
-    font-size: <?php echo $divi_settings['divi_filter_title_size']; ?>px;
-    font-weight: <?php echo $divi_settings['divi_filter_title_weight']; ?>;
-    padding: <?php echo $divi_settings['divi_filter_title_top'].'px '.$divi_settings['divi_filter_title_right'].'px '.$divi_settings['divi_filter_title_buttom'].'px '.$divi_settings['divi_filter_title_left']; ?>px;
-	font-family:<?php echo $divi_settings['divi_filter_title_fontfamily']; ?>;
-	margin: 0 0 0.75em;
-}
-.reset_text{
- color: <?php echo $color11; ?> !important;
- background: <?php echo $color12; ?>; 
- font-size:<?php echo $divi_settings['divi_reset_size']; ?>px;
- font-weight:<?php echo $divi_settings['divi_reset_weight']; ?>;
- border: <?php echo $divi_settings['divi_reset_bsize']; ?>px solid <?php echo $color13; ?>;  
- font-family:<?php echo $divi_settings['divi_reset_fontfamily']; ?>; 
- box-shadow: <?php echo $divi_settings['divi_box_show1'].'px '.$divi_settings['divi_box_show2'].'px '.$divi_settings['divi_box_show3'].'px '.$divi_settings['divi_box_show4'].'px '.$color15; ?>;
- padding: 1em 2em;
-}
-.apply_text{
- color: <?php echo $color8; ?>;
- background: <?php echo $color9; ?>; 
- font-size:<?php echo $divi_settings['divi_apply_size']; ?>px;
- font-weight:<?php echo $divi_settings['divi_apply_weight']; ?>;
- border: <?php echo $divi_settings['divi_apply_bsize']; ?>px solid <?php echo $color10; ?>;
- font-family:<?php echo $divi_settings['divi_apply_fontfamily']; ?>;
- box-shadow: <?php echo $divi_settings['divi_box_show1'].'px '.$divi_settings['divi_box_show2'].'px '.$divi_settings['divi_box_show3'].'px '.$divi_settings['divi_box_show4'].'px '.$color15; ?>;
- padding: 1em 2em;
-}
-button.preview_apply_reset_right {
-    color: <?php echo $color5; ?>;
-    background: <?php echo $color6; ?>;
-    border: <?php echo $divi_settings['divi_mainbutton_bsize']; ?>px solid <?php echo $color7; ?>;
-    font-size: <?php echo $divi_settings['divi_mainbutton_size']; ?>px;
-    padding: <?php echo $divi_settings['divi_mainbutton_top']; ?>px <?php echo $divi_settings['divi_mainbutton_right']; ?>px <?php echo $divi_settings['divi_mainbutton_buttom']; ?>px <?php echo $divi_settings['divi_mainbutton_left']; ?>px;
-	border-radius: <?php echo $divi_settings['divi_mainbutton_radius']; ?>px;
-	line-height: 0;
-	margin-top: -3px;
-    margin-right: -1px;
-}
-.preview_cat{
-    max-height: <?php echo $divi_settings['divi_box_maxheight']; ?>px;
-	overflow-y: auto;	
-}
-.filter_back_end_h4{
-    color: <?php echo $color3; ?> !important;
-    line-height: <?php echo $divi_settings['divi_filter_name_lineheight']; ?>px;
-    font-size: <?php echo $divi_settings['divi_filter_name_size']; ?>px;
-    font-weight: <?php echo $divi_settings['divi_filter_name_weight']; ?>;
-    padding: <?php echo $divi_settings['divi_filter_name_top'].'px '.$divi_settings['divi_filter_name_right'].'px '.$divi_settings['divi_filter_name_buttom'].'px '.$divi_settings['divi_filter_name_left']; ?>px;
-	font-family:<?php echo $divi_settings['divi_filter_name_fontfamily']; ?>;
-}
-span.label_mname{
-    color: <?php echo $color4; ?> !important;
-    line-height: <?php echo $divi_settings['divi_filter_content_lineheight']; ?>px;
-    font-size: <?php echo $divi_settings['divi_filter_content_size']; ?>px;
-    font-weight: <?php echo $divi_settings['divi_filter_content_weight']; ?>;
-    padding: <?php echo $divi_settings['divi_filter_content_top'].'px '.$divi_settings['divi_filter_content_right'].'px '.$divi_settings['divi_filter_content_buttom'].'px '.$divi_settings['divi_filter_content_left']; ?>px;
-	font-family:<?php echo $divi_settings['divi_filter_content_fontfamily']; ?>;
-}
-.product_visibility {
-    display: none;
-}
-</style>
